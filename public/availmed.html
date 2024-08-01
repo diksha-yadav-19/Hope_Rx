@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="jquery-3.6.4.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<script>
+$(document).ready(function () {
+$("#availbtn").click(function() {
+      var email = $("#txtemail").val();
+      var medcine = $("#medname").val();
+      var expiry=$("#expdate").val();
+      var pack=$("#packging").val();
+      var quantity=$("#qty").val();
+
+  
+ 
+          var obj = {
+              type: "GET",
+              url: "/ajax-avail-process",
+              data: {
+                  email: email,
+                  medname: medcine,
+                  expdate: expiry,
+                  packging:pack,
+                  qty:quantity,
+              },
+            }
+  
+          $.ajax(obj)
+              .done(function(response) {
+                  $("#avail").html(response);
+              })
+              .fail(function(errKuch) {
+                  alert(errKuch);
+              });
+      }); 
+      function setActiveUser(){
+                var au=localStorage.getItem("active");
+                $("#txtemail").val(au).prop("readonly",true);
+            }
+            setActiveUser();
+    });
+  
+
+
+
+</script>
+</head>
+
+<body style="background-color: #E3F6FF;">
+    <!------------------------------------------------------------NAvbar--------------------------------------------------------------------------->
+    <nav class=" navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #9AC5F4;height: 60px;">
+        <div class="container">
+            <a class="navbar-brand" href="index.html" style="color: #071952; font-family: Lucida Calligraphy; font-weight: bold; font-size: 25px;">
+                <img src="pics/logo.jpg" alt="Logo" width="80"  class="d-inline-block align-text-center">
+                HopeRX
+              </a>
+            <!-- <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-primary me-3 " data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Logout
+                </button>
+            </div> -->
+        </div>
+    </nav>
+    <!----------------------------------------------form------------------------------------------------------------------>
+
+
+    <section class="h-100 h-custom">
+        <div class="container py-5 h-100 mt-5">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="card rounded-3">
+                        <img src="pics/medicines.jpg" class="w-100" style="height: 250px;"
+                            alt="Sample photo">
+                        <div class="card-body p-4 p-md-5">
+                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2" style="font-family: cursive;">Avail Medicine
+                                Form</h3>
+
+                            <form method="post">
+
+                                <div class="form-outline mb-4">
+                                    <label class="form-label" for="form3Example1q">Email</label>
+                                    <input type="email" id="txtemail" class="form-control"
+                                        placeholder="Enter Your Email" />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+
+                                        <div class="form-outline datepicker">
+                                            <label for="medname" class="form-label">Medicine Name</label>
+                                            <input type="text" class="form-control" id="medname" placeholder="Name of medicine" />
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline datepicker">
+                                            <label for="expdate" class="form-label">Expiry Date</label>
+                                            <input type="date" class="form-control" id="expdate" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-group">
+                                            <label class="form-label" for="packaging">Packging</label>
+                                            <select class="form-control" name="packaging" id="packging">
+                                                <option class="hidden" selected disabled>Select Packging</option>
+                                                <option>Blister packs</option>
+                                                <option>Bottles</option>
+                                                <option>Sachet packaging</option>
+                                                <option>Vials</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="form-outline datepicker">
+                                            <label for="qty" class="form-label">Quantity</label>
+                                            <input type="number" class="form-control" id="qty" placeholder="Quantity of medicine" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-success btn-lg mb-1" id="availbtn">Avail Medicine</button>
+                                <div id="avail"></div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

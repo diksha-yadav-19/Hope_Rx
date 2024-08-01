@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Users Records</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="javascript/angular.min.js"></script>
+  <script>
+     var module=angular.module("myModule",[]);
+        module.controller("myController",function($scope,$http){
+            $scope.jsonArray;
+            $scope.fetchRecords=function()
+                {
+                    var url="/get-angular-all-records";
+                    $http.get(url).then(done,fail);
+                    function done(response)
+                        {
+                            alert(JSON.stringify(response.data));
+                            $scope.jsonArray=response.data;
+
+                        }
+                     function fail(response)
+                        {
+                                alert(response.data);
+                        }   
+                }
+                $scope.doBlock=function(email)
+                {
+                    if(confirm("Are You Sure To Block User?")==false)
+                        return;
+                        var url="/do-angular-block?emailkuch="+email;
+                        $http.get(url).then(done,fail);
+                        function done(response)
+                        {
+                           alert(response.data);
+                           $scope.fetchRecords();
+
+                        }
+                     function fail(response)
+                        {
+                                alert(response.data);
+                        }   
+                }
+                $scope.doResume=function(email)
+                {
+                        var url="/do-angular-resume?emailkuch="+email;
+                        $http.get(url).then(done,fail);
+                        function done(response)
+                        {
+                           alert(response.data);
+                           $scope.fetchRecords();
+
+                        }
+                     function fail(response)
+                        {
+                                alert(response.data);
+                        }   
+                }
+                
+        })
+  </script>
+</head>
+<body ng-app="myModule" ng-controller="myController" style="background-color: #E3F6FF;">
+    <center><button type="button" ng-click="fetchRecords();" class="btn btn-primary mt-5 mb-3">Fetch Records</button></center>
+<div class="container">
+  <h2>USERS RECORDS</h2>        
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Sr.No</th>
+        <th>Email</th>
+        <th>Type</th>
+        <th>Dos</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="obj in jsonArray">
+        <td>{{$index+1}}</td>
+        <td>{{obj.email}}</td>
+        <td>{{obj.type}}</td>
+        <td>{{obj.dos}}</td>
+        <td>{{obj.status}}</td>
+        <td align="center">
+            <button type="button" class="btn btn-danger mb-1" ng-click="doBlock(obj.email);">Block</button>
+             <button type="button" class="btn btn-info mb-1"  ng-click="doResume(obj.email);">Resume</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+</body>
+</html>

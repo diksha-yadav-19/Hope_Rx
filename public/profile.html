@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <link rel="stylesheet" href="styleproject/profile.css">
+
+    <script>
+        //-------------------------this code is for print img on registration form----------------------------------
+        function doPrev(refFile, prevImg) {
+            const [file] = refFile.files
+            if (file) {
+                prevImg.src = URL.createObjectURL(file)
+            }
+        }
+
+        $(document).ready(function () {
+            $("#btnSearch").click(doSearch);
+
+            function doSearch() {
+                var anyemail = $("#txtemail").val();
+                var obj = {
+                    type: "get",
+                    url: "/get-json-record",
+                    data: {
+                        Email: anyemail
+                    }
+                }
+
+                $.ajax(obj).done(function (responseJson) {
+                    alert(JSON.stringify(responseJson));
+                    $("#txtname").val(responseJson[0].name);
+                    $("#txtPhone").val(responseJson[0].contact);
+                    $("#txtadd").val(responseJson[0].address);
+                    $("#dob").val(responseJson[0].dob);
+                    $("#cities").val(responseJson[0].city);
+                    $("#gender").val(responseJson[0].gender)
+                    $("#idprf").val(responseJson[0].id);
+                    $("#fromtime").val(responseJson[0].start_time);
+                    $("#totime").val(responseJson[0].end_time);
+                    $("#imgPrev").prop("src", "uploads/" + responseJson[0].picname);
+                    $("#hdn").val(responseJson[0].picname);
+
+                    var avalability_hours=responseJson[0].avaliablity_hours.split("-");
+                    var avf =avalability_hours[0];
+                    var avt =avalability_hours[1];
+                    $("#fromtime").val(avf);
+                    $("#totime").val(avt);
+
+                }).fail(function (error) {
+                    alert(error);
+                })
+
+            }
+            function setActiveUser(){
+                var au=localStorage.getItem("active");
+                $("#txtemail").val(au).prop("readonly",true);
+            }
+            setActiveUser();
+        });
+
+    </script>
+</head>
+
+<body>
+    <!--  -->
+
+    <nav class=" navbar navbar-expand-lg navbar-light" style="background-color: #9AC5F4;height: 60px;">
+        <div class="container">
+            <a class="navbar-brand" href="index.html" style="color: #071952; font-family: Lucida Calligraphy; font-weight: bold; font-size: 25px;">
+                <img src="pics/logo.jpg" alt="Logo" width="80" class="d-inline-block align-text-center">
+                HopeRX
+              </a>
+          
+        </div>
+    </nav>
+
+
+
+    <!--  -->
+    <div class="container register">
+        <div class="row">
+            <div class="col-md-3 register-left">
+                <br>
+                <h3>Welcome</h3>
+                <p>Complete Your Profile Form Must Fill Each Detail Correctly!</p>
+            </div>
+
+            <div class="col-md-9 register-right">
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="hdn" name="hdn">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <h3 class="register-heading"
+                                style="font-size: 35px; font-family: cursive; font-weight: 500;">Profile Form</h3>
+                            <div class="row register-form">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label" for="emailAddress">Email</label>
+                                        <input type="text" class="form-control" id="txtemail" name="txtemail"
+                                            placeholder="Email ID *" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="name">Name</label>
+                                        <input type="text" class="form-control" id="txtname" name="txtname"
+                                            placeholder="Name *" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="Address">Address</label>
+                                        <input type="text" class="form-control" id="txtadd" name="txtadd"
+                                            placeholder="Address *" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="dob">Date of Birth</label>
+                                        <input type="date" class="form-control" id="dob" name="dob"
+                                            placeholder="Date of Birth *" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="gender">Gender</label>
+                                        <select class="form-control" name="gender" id="gender">
+                                            <option class="hidden" selected disabled>Select Gender</option>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                            <option>other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="time">Availability Time</label>
+                                        <div class="row">
+                                        <div class="col-md-5">
+                                        <input type="time" class="form-control" id="fromtime" name="fromtime"/>
+                                    </div>
+                                            <span>to</span>
+                                            <div class="col-md-5">  
+                                            <input type="time" class="form-control" id="totime" name="totime"/>
+                                        </div>
+                                        </div>
+                                    </div>
+                            
+                                    
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mt-4">
+                                        <input type="button" class="btn btn-primary btn-lg w-100" id="btnSearch"
+                                            value="Search" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="number">Contact No.</label>
+                                        <input type="text" minlength="10" maxlength="10" name="txtPhone" id="txtPhone"
+                                            class="form-control" placeholder="Your Phone *" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="idprof">ID Proof</label>
+                                        <select class="form-control" onchange="checkCustomIDProof(this)" name="idprf"
+                                            id="idprf">
+                                            <option class="hidden" selected disabled>ID Proof</option>
+                                            <option>Driver's License</option>
+                                            <option>Voter ID Card</option>
+                                            <option>Aadhaar Card</option>
+                                            <option>Passport</option>
+                                            <option>PAN Card</option>
+                                            <!-- <option>Student ID Card</option> -->
+                                            <option value="custom">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="cityOptions">Select City</label>
+                                        <input type="text" class="form-control" list="cityOptions" name="cities"
+                                            id="cities" placeholder="Select City">
+                                        <datalist id="cityOptions">
+                                            <option value="Bathinda">Bathinda</option>
+                                            <option value="Patiala">Patiala</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Noida">Noida</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Bangalore">Bangalore</option>
+                                        </datalist>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="pic">Upload Your Pic</label>
+                                        <input class="form-control form-control-lg" onchange="doPrev(this,imgPrev)"
+                                            name="fpic" id="fpic" type="file" accept="image/*" />
+                                        <div class="small text-muted mt-2">Upload your Pic with max file size 50 MB
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 text-center">
+                                        <img id="imgPrev" src="" alt="Preview Image"
+                                            style="max-width: 200px; max-height: 200px;">
+                                    </div>
+                                    <br>
+                                </div>
+
+                                <div class="col-md-3 mb-2">
+                                   
+                                </div>
+                                <div class="col-md-3 mb-2">
+
+                                    <input class="btn btn-primary btn-lg w-100" type="submit" value="Submit"
+                                        formaction="/db-profile-process" />
+                                </div>
+                                <!-- <div class="col-md-4 mb-2">
+                                    <input class="btn btn-primary btn-lg w-100" type="submit" value="Delete Account"
+                                        formaction="/db-delete-process" />
+                                </div> -->
+                                <div class="col-md-3">
+                                    <input class="btn btn-primary btn-lg w-100" type="submit" value="Update"
+                                        formaction="/db-update-process" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

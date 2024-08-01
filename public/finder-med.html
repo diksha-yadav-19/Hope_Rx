@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Poppins:ital,wght@0,500;1,300&display=swap"
+        rel="stylesheet">
+</head>
+<style>
+    .btn-rounded {
+        border-radius: 50px;
+    }
+
+    .btn-rounded {
+        padding: 10px 20px;
+        margin: 5px;
+        width: 50%;
+    }
+
+    .btn-rounded {
+        color: #fff;
+        /* Button text color */
+        background-color: #007bff;
+        /* Button background color */
+    }
+
+    .btn-rounded:hover,
+    .btn-rounded:focus {
+        color: #fff;
+        background-color: #0056b3;
+        /* Adjust the color for the hover/focus effect */
+    }
+
+    .card {
+        background-color: #C5DFF8;
+        border: 1px solid #4A55A2;
+    }
+
+    .card:hover {
+        box-shadow: 0px 0px 20px 0px #9DB2BF;
+        transform: translate(0px, 7px);
+    }
+</style>
+
+<script>
+    var module = angular.module("myModule", []);
+    module.controller("myController", function ($scope, $http) {
+        $scope.selcity;
+        $scope.selmed;
+        $scope.cityJSONAry = [];
+        $scope.medJSONAry = [];
+
+        $scope.fetchCities = function () {
+            $http.get("/get-cities").then(done, fail);
+            function done(response) {
+                // alert(JSON.stringify(response.data));
+                $scope.cityJSONAry = response.data;
+            }
+            function fail(response) {
+                alert(response.data);
+            }
+
+        };
+
+        $scope.fetchMeds = function () {
+            $http.get("/get-medicines").then(done, fail);
+            function done(response) {
+                $scope.medJSONAry = response.data;
+            }
+            function fail(response) {
+                alert(response.data);
+            }
+
+        };
+        $scope.fetchRecords = function () {
+            var url = "/fetch-donors?medKuch=" + $scope.selmed + "&cityKuch=" + $scope.selcity;
+            alert(url);
+            $http.get(url).then(done, fail);
+
+            function done(response) {
+                alert(JSON.stringify(response.data));
+                $scope.JsonArr3 = response.data;
+            }
+
+            function fail(response) {
+                alert(response.data);
+            }
+        };
+        $scope.selOneObj;
+        $scope.doShowOne = function (selIndex) {
+            $scope.selOneObj = $scope.JsonArr3[selIndex];
+        };
+
+    });
+
+</script>
+
+<body ng-app="myModule" ng-controller="myController" ng-init="fetchCities(); fetchMeds();" style="background-color: #E3F6FF;">
+    <nav class=" navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #9AC5F4;height: 60px;">
+        <div class="container">
+            <a class="navbar-brand" href="index.html" style="color: #071952; font-family: Lucida Calligraphy; font-weight: bold; font-size: 25px;">
+                <img src="pics/logo.jpg" alt="Logo" width="80" class="d-inline-block align-text-center">
+                HopeRX
+              </a>
+            <!-- <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-primary me-3 " data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Logout
+                </button>
+            </div> -->
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 15%;">
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-4 mb-3">
+                <div class="form-group">
+                    <label for="citySelect">Select City:</label>
+                    <select id="citySelect" class="form-control"
+                        ng-options="obj.city as obj.city for obj in cityJSONAry" ng-model="selcity">
+                        <option value="">Select</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="form-group">
+                    <label for="medicineSelect">Select Medicine:</label>
+                    <select id="medicineSelect" class="form-control"
+                        ng-options="obj.medname as obj.medname for obj in medJSONAry" ng-model="selmed">
+                        <option value="">Select</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="justify-content-center">
+            <center>
+                <button type="button" ng-click="fetchRecords();" class="btn btn-primary">Fetch Records</button>
+            </center>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-3" ng-repeat="obj in JsonArr3">
+                <div class="card">
+                    <div class="card-body" style="font-family: 'Poppins', sans-serif;">
+                        <h5>Name of Donor : {{obj.name}}</h5>
+                        <h5>Contact : {{obj.contact}}</h5>
+                        <h5>Avaliable Time : {{obj.avaliablity_hours}}</h5>
+                        <center><a href="#" class="btn btn-primary btn-rounded mt-3" ng-click="doShowOne($index)" data-bs-toggle="modal" data-bs-target="#exampleModal">Details</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header  d-flex justify-content-center align-items-center" >
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Details of Donors</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="background-color: #E3F6FF; color: #071952;">
+                    <div class="text-center">
+                        <img src="pics/profiledonor.png" width="150" height="150" class="rounded" alt="missing imgdonor">
+                    </div>
+                    <h5 class="mt-2">Email id: {{selOneObj.emailid}}</h5>
+                    <h5 class="mt-2">Name: {{selOneObj.name}}</h5>
+                    <h5 class="mt-2">Address: {{selOneObj.address}}</h5>
+                    <h5 class="mt-2">Contact No: {{selOneObj.contact}}</h5>
+                    <h5 class="mt-2">Gender: {{selOneObj.gender}}</h5>
+                    <h5 class="mt-2">DOB: {{selOneObj.dob}}</h5>
+                    <h5 class="mt-2">Avaliability Hours: {{selOneObj.avaliablity_hours}}</h5>
+                </div>
+                <div class="modal-footer" style="background-color: #E3F6FF; border: none;">
+                  </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

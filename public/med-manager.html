@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+
+    <script>
+        var module = angular.module("myModule", []);
+        module.controller("myController", function ($scope, $http) {
+            $scope.jsonArray;
+            $scope.email = "";
+
+            $scope.fetchRecords = function () {
+                var url = "/get-angular-records?email=" + $scope.email;
+                $http.get(url).then(done, fail);
+                function done(response) {
+                    alert(JSON.stringify(response.data));
+                    $scope.jsonArray = response.data;
+                }
+                function fail(response) {
+                    alert(response.data);
+                }
+            }
+
+            $scope.doDelete = function (srno) {
+                if (confirm("Are You Sure To Delete?") == false)
+                    return;
+
+                var url = "/do-angular-delete?srno=" + srno;
+                $http.get(url).then(done, fail);
+            }
+
+            function done(response) {
+                alert(response.data);
+                $scope.fetchRecords();
+            }
+
+            function fail(response) {
+                alert(response.data);
+            }
+            function setActiveUser() {
+                var au = localStorage.getItem("active");
+                $scope.email = au;
+            }
+            setActiveUser();
+        })
+    </script>
+</head>
+
+<body ng-app="myModule" ng-controller="myController" style="background-color: #E3F6FF;">
+
+    <nav class=" navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #9AC5F4;height: 60px;">
+        <div class="container">
+            <a class="navbar-brand" href="index.html" style="color: #071952; font-family: Lucida Calligraphy; font-weight: bold; font-size: 25px;">
+                <img src="pics/logo.jpg" alt="Logo" width="80" class="d-inline-block align-text-center">
+                HopeRX
+              </a>
+            <!-- <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-primary me-3 " data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Logout
+                </button>
+            </div> -->
+        </div>
+    </nav>
+
+
+
+
+    <div class="row mb-5  d-flex justify-content-center align-items-center" style="margin-top: 8%;">
+        <div class="col-md-6">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="text" class="form-control" ng-model="email" placeholder="Enter your email" readonly>
+        </div>
+        <div class="col-md-2" style="margin-top: 30px;">
+            <center>
+                <button type="button" ng-click="fetchRecords();" class="btn btn-primary">Get Records</button>
+            </center>
+        </div>
+    </div>
+    
+    
+    <div class="container">
+        <h2>MEDICINES MANAGER</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Medicine Name</th>
+                    <th>Expiry Date</th>
+                    <th>Packaging</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="obj in jsonArray">
+                    <td>{{$index+1}}</td>
+                    <td>{{obj.medname}}</td>
+                    <td>{{obj.expdate}}</td>
+                    <td>{{obj.packging}}</td>
+                    <td>{{obj.qty}}</td>
+                    <td align="center">
+                        <button type="button" class="btn btn-danger mb-1" ng-click="doDelete(obj.srno);">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
